@@ -4,6 +4,12 @@
 
 class ColorSystem(object):
     """
+    That class contains the main data information to change ANSI codification of a string
+    :cvar _foreground: A dict that contain the ANSI configuration of the letter on the text.
+    :cvar _foreground_modes: Another dict to the letter ANSI configuration, but that contains options, not colors, 
+                             options such as bold letter or inverse colors
+    :cvar _backgrounds: That dict contain the color information for the background of the text.
+    All the dicts and cvars have the 'default' option to return the text part with the standard codification.
     """
 
     _foreground = {
@@ -54,27 +60,44 @@ class ColorSystem(object):
 
 
     class ColorNotFound(KeyError):
+        """
+        if the color can't be found as a key from the dict option.
+        """
         args: str = "That color '$color' don't exist in the system!"
 
-        def __init__(self, color: str):
-            old_args = self.args
-            self.args = old_args.replace("$color", color)
+        def __init__(self, *args):
+            """
+            Starts the error message that contain the error!
+            """
+            print(args)
+            exit(1)
+           
 
     class InvalidColorType(Exception):
-        args: str = "That type of color '$color_type' don't exists!"
+        """
+        At the verification, it  is used for the programming debug, if the option of the method 'check_valid_colors' have the
+        invalid *type_color
+        """
+        args: object = "That type of color '$color_type' don't exists!"
 
-        def __init__(self, color_type: str):
-            old_args = self.args
-            self.args = old_args.replace("$color_type", color_type)
+        def __init__(self, *args):
+            """
+            Starts the error message that contain the error!
+            """
+            print(args)
+            exit(1)
 
     @classmethod
     def check_valid_colors(cls, colors: str, type_color="foreground"):
+        """
+        Verify if a color is valid, if not raise the Exception cls.ColorNotFound
+        """
         if type_color == "foreground":
-            if colors not in cls._foreground.keys(): raise cls.ColorNotFound(colors)
+            if colors not in cls._foreground.keys(): raise cls.ColorNotFound(colors+" is not a valid color!")
         elif type_color == "background":
-            if colors not in cls._backgrounds.keys(): raise cls.ColorNotFound(colors)
+            if colors not in cls._backgrounds.keys(): raise cls.ColorNotFound(colors + " is not a valid color!")
         elif type_color == "foreground-modes":
-            if colors not in cls._foreground_modes.keys(): raise cls.ColorNotFound(colors)
+            if colors not in cls._foreground_modes.keys(): raise cls.ColorNotFound(colors + "is not a valid color!")
         else: raise cls.InvalidColorType(type_color)
 
 
